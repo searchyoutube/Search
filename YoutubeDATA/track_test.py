@@ -80,47 +80,32 @@ def makefile(date):
     api_key= f.readline()
     f.close()
 
-
-    for index, row in df.iterrows():
-        video_id = row['id']
-        video_info = get_video_info(video_id, api_key)
-
-        if video_info:
-            video_name = row['video_name'].replace('/', '-')
-            output_filename = video_name + "_" + date + '.csv'
-            output_filename = 'DATA/video/' + output_filename
-
-            # Check if the file already exists
-            if os.path.exists(output_filename):
-                # Load existing file and append new data
-                existing_df = pd.read_csv(output_filename, index_col=0)
-                updated_df = pd.concat([existing_df, pd.DataFrame([video_info])])
-                updated_df.to_csv(output_filename, index=True)
-                print(f'Updated video information for {video_name} in {output_filename}')
-            else:
-                # Save video information to a new CSV file
-                video_df = pd.DataFrame([video_info])
-                video_df.to_csv(output_filename, index=True)
-                print(f'Saved video information for {video_name} to {output_filename}')
+    video_id = 'WkGFdjxVNU0'
+    video_info = get_video_info(video_id, api_key)
+    if video_info:
+        video_name = 'video_test'
+        output_filename = video_name + "_" + date + '.csv'
+        output_filename = 'DATA/video/' + output_filename
+        # Check if the file already exists
+        if os.path.exists(output_filename):
+            # Load existing file and append new data
+            existing_df = pd.read_csv(output_filename, index_col=0)
+            updated_df = pd.concat([existing_df, pd.DataFrame([video_info])])
+            updated_df.reset_index()
+            updated_df.to_csv(output_filename, index=True)
+            print(f'Updated video information for {video_name} in {output_filename}')
         else:
-            print(f'Failed to retrieve video information for video ID: {video_id}')
+            # Save video information to a new CSV file
+            video_df = pd.DataFrame([video_info])
+            video_df.to_csv(output_filename, index=True)
+            print(f'Saved video information for {video_name} to {output_filename}')
+    else:
+        print(f'Failed to retrieve video information for video ID: {video_id}')
 
 if __name__ == "__main__":
     date = input()
     # interval = datetime.timedelta(seconds=5)
-    while (True):
-        try:
-            # Get the current time
-            current_time = datetime.datetime.now()
-
-            # Calculate the time until the next hour
-            next_hour = (current_time + datetime.timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
-            # next_hour = (current_time + datetime.timedelta(seconds= 10)).replace(microsecond=0)
-            time_until_next_hour = (next_hour - current_time).total_seconds()
-            print(next_hour)
-            # Wait until the next hour
-            sleep(time_until_next_hour)
-            makefile(date)
-        except Exception as e:
-            print("error occured",e)
-            break
+    try:
+        makefile(date)
+    except Exception as e:
+        print("error occured",e)
