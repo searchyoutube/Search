@@ -68,7 +68,7 @@ def get_delta(date):
     return time_difference_hours
 
 def makefile():
-    df = pd.read_csv(r'DATA\videoids.csv')
+    df = pd.read_csv(r'DATA\videoids_daily.csv')
     f = open("key.txt",'r')
     api_key= f.readline()
     f.close()
